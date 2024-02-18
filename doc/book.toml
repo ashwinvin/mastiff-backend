@@ -1,0 +1,6 @@
+[book]
+authors = ["Ashwin Vinod"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Mastiff In Detail"
