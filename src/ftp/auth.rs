@@ -1,10 +1,9 @@
-use std::fmt::Debug;
-use std::fmt::Display;
-use std::path::{Path, PathBuf};
+use std::{
+    fmt::{Debug, Display},
+    path::{Path, PathBuf},
+};
 
-use libunftp::auth::Credentials;
-use libunftp::auth::UserDetail;
-use libunftp::auth::{AuthenticationError, Authenticator};
+use libunftp::auth::{AuthenticationError, Authenticator, Credentials, UserDetail};
 
 #[derive(Debug, thiserror::Error)]
 pub enum AuthError {
@@ -70,7 +69,8 @@ impl Authenticator<User> for AuthManager {
         username: &str,
         creds: &Credentials,
     ) -> Result<User, AuthenticationError> {
-        tracing::info!("{:?}", creds);
+        tracing::debug!("User: {} attempting to authenticate", username);
+
         if let Some(password) = &creds.password {
             return Ok(User {
                 username: "meower".to_string(),
