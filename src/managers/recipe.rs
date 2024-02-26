@@ -48,6 +48,15 @@ pub struct Recipe {
     pub config_path: Option<PathBuf>,
 }
 
+impl Recipe {
+    fn parse(path: &str) -> Result<Self> {
+        Ok(Config::builder()
+            .add_source(File::with_name(path))
+            .build()?
+            .try_deserialize()?)
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct RecipeManager {
     recipe_directory: PathBuf,
@@ -65,12 +74,7 @@ impl RecipeManager {
     /// Parse and build the recipe.
     #[instrument(skip(self), level = "debug")]
     pub async fn build_recipe(&self, recipe_path: &Path) -> Result<()> {
-        let recipe_config: Recipe = Config::builder()
-            .add_source(File::with_name(
-                recipe_path.join("recipe.toml").to_str().unwrap(),
-            ))
-            .build()?
-            .try_deserialize()?;
+        let recipe_config = Recipe::parse(recipe_path.join("recipe.toml").to_str().unwrap())?;
 
         match recipe_config.image {
             ImageType::Registry(name) => {
